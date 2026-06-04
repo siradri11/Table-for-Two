@@ -1,0 +1,93 @@
+.pantry-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.pantry-page__search {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+}
+
+.pantry-page__tags-link {
+  font-size: 0.9rem;
+  color: var(--accent-strong);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.pantry-page__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pantry-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pantry-list__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.pantry-list__link {
+  flex: 1;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.pantry-list__main {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pantry-list__main strong {
+  color: var(--text);
+}
+
+.pantry-list__qty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.pantry-list__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pantry-list__delete {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 0.75rem;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 20px;
+}

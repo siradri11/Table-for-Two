@@ -1,0 +1,53 @@
+.household-setup {
+  padding: 20px;
+}
+
+.household-setup__choose p {
+  color: var(--muted);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.household-setup__choose .btn {
+  margin-bottom: 10px;
+}
+
+.household-setup label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+.household-setup input {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+}
+
+.household-setup__error {
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.household-setup__code {
+  font-size: 1.1rem;
+  margin: 12px 0;
+}
+
+.household-setup__hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--accent-strong);
+  font-family: var(--font);
+  margin-top: 12px;
+  cursor: pointer;
+  width: 100%;
+}

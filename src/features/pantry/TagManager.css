@@ -1,0 +1,73 @@
+.tag-manager h2 {
+  margin: 16px 0;
+}
+
+.tag-manager__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tag-manager__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.tag-manager__chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tag-manager__preset {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.tag-manager__actions button {
+  background: none;
+  border: none;
+  font-family: var(--font);
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.tag-manager__actions .danger {
+  color: var(--danger);
+}
+
+.tag-manager__colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.color-swatch--active {
+  border-color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.tag-manager__new input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  font-family: var(--font);
+}

@@ -1,0 +1,42 @@
+.pantry-form label,
+.pantry-form fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-weight: 600;
+  border: none;
+  padding: 0;
+}
+
+.pantry-form legend {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pantry-form input,
+.pantry-form select,
+.pantry-form textarea {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 1rem;
+}
+
+.pantry-form__row {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  gap: 12px;
+}
+
+.pantry-form__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.form-error {
+  color: var(--danger);
+  font-size: 0.9rem;
+}

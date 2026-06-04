@@ -1,0 +1,129 @@
+.plan-page__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.plan-page__nav h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.plan-page__nav button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.plan-page__toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.plan-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.plan-calendar__head {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 4px;
+}
+
+.plan-calendar__day {
+  aspect-ratio: 1;
+  border: none;
+  background: var(--surface);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+  position: relative;
+  color: var(--text);
+}
+
+.plan-calendar__day--muted {
+  opacity: 0.35;
+}
+
+.plan-calendar__day--selected {
+  background: var(--accent);
+  font-weight: 700;
+}
+
+.plan-calendar__dot {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.plan-calendar__dot--plan {
+  background: var(--accent-strong);
+}
+
+.plan-page__day-detail h3 {
+  margin: 0 0 12px;
+}
+
+.plan-page__day-detail h4 {
+  margin: 12px 0 8px;
+  font-size: 0.95rem;
+}
+
+.plan-page__day-detail ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.6;
+}
+
+.plan-page__note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.plan-page__meal-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.plan-page__meal-row select {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+}
+
+.plan-page__empty {
+  color: var(--muted);
+  margin: 0;
+}
+
+.plan-page__shop-list {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.7;
+}
+
+.plan-page__shop-list small {
+  color: var(--muted);
+}

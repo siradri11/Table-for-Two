@@ -1,0 +1,20 @@
+.tag-chip {
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.tag-chip--small {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+}
+
+.tag-chip--selected {
+  box-shadow: var(--shadow);
+}

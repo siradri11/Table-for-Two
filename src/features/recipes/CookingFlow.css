@@ -1,0 +1,73 @@
+.cooking-flow {
+  padding-bottom: 24px;
+}
+
+.cooking-flow__progress {
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.cooking-flow__step-card h2 {
+  margin: 0 0 12px;
+  color: var(--accent-strong);
+}
+
+.cooking-flow__step-img {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.cooking-flow__instruction {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--text);
+}
+
+.cooking-flow__footer {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cooking-flow--post h2 {
+  margin: 0 0 16px;
+}
+
+.cooking-flow__usage {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.cooking-flow__hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.cooking-flow__usage-row {
+  display: grid;
+  grid-template-columns: 1fr 72px 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.cooking-flow__usage-row input,
+.cooking-flow__usage-row select {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font);
+}
+
+.cooking-flow--post .btn {
+  margin-top: 10px;
+}
