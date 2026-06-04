@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/verify-env.mjs && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "preview:host": "vite preview --host"

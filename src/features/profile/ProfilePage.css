@@ -1,0 +1,51 @@
+.profile-page__section {
+  margin-bottom: 16px;
+}
+
+.profile-page__section h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+
+.profile-page__hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+
+.profile-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.profile-page input {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+}
+
+.profile-page__invite-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.profile-page__code {
+  flex: 1;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.profile-page__error {
+  color: var(--danger);
+  font-size: 0.9rem;
+}

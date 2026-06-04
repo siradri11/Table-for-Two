@@ -15,6 +15,8 @@ import { Modal } from '../../components/Modal'
 import { useHousehold } from '../../hooks/useHousehold'
 import { useRealtime } from '../../hooks/useRealtime'
 import { aggregatePlanIngredients, checkIngredient } from '../../lib/pantryMatch'
+import { getDisplayName, loadHouseholdDisplayNames } from '../../lib/profiles'
+import { addToCart } from '../../lib/shoppingCart'
 import { fetchPantry } from '../../lib/recipes'
 import { supabase } from '../../supabaseClient'
 import { MEAL_TYPES, formatQuantity } from '../../lib/units'
@@ -27,6 +29,7 @@ export function PlanPage() {
   const [mealPlans, setMealPlans] = useState([])
   const [recipes, setRecipes] = useState([])
   const [pantry, setPantry] = useState([])
+  const [displayNameMap, setDisplayNameMap] = useState({})
   const [selectedDay, setSelectedDay] = useState(null)
   const [planMode, setPlanMode] = useState(false)
   const [showShop, setShowShop] = useState(false)
@@ -36,7 +39,7 @@ export function PlanPage() {
     if (!householdId) return
     const start = format(startOfMonth(month), 'yyyy-MM-dd')
     const end = format(endOfMonth(month), 'yyyy-MM-dd')
-    const [logs, plans, recs, pan] = await Promise.all([
+    const [logs, plans, recs, pan, names] = await Promise.all([
       supabase
         .from('cook_logs')
         .select('*, recipes(name)')
@@ -51,11 +54,13 @@ export function PlanPage() {
         .lte('plan_date', end),
       supabase.from('recipes').select('id, name').eq('household_id', householdId).order('name'),
       fetchPantry(householdId),
+      loadHouseholdDisplayNames(householdId),
     ])
     if (!logs.error) setCookLogs(logs.data ?? [])
     if (!plans.error) setMealPlans(plans.data ?? [])
     if (!recs.error) setRecipes(recs.data ?? [])
     setPantry(pan)
+    setDisplayNameMap(names.displayNameMap)
   }, [householdId, month])
 
   useEffect(() => {
@@ -91,6 +96,12 @@ export function PlanPage() {
     load()
   }
 
+  const deleteCookLog = async (logId) => {
+    if (!confirm('Remove this meal from your history?')) return
+    await supabase.from('cook_logs').delete().eq('id', logId)
+    load()
+  }
+
   const computeShopping = async () => {
     const plans = mealPlans
     const plannedRecipes = []
@@ -104,6 +115,40 @@ export function PlanPage() {
       .filter(({ check }) => !check.ok)
     setShopList(shortages)
     setShowShop(true)
+  }
+
+  const addShopItemToCart = async ({ ing, check }) => {
+    const needed = Number(ing.quantity) || 0
+    const have = check.reason === 'insufficient' ? Number(check.have) : 0
+    const qty = Math.max(needed - have, needed)
+    const pantryItem = pantry.find(
+      (p) => p.id === check.pantryItemId || p.name.toLowerCase() === ing.name.toLowerCase(),
+    )
+    try {
+      await addToCart(householdId, {
+        name: ing.name,
+        quantity: qty,
+        unit: ing.unit,
+        pantry_item_id: pantryItem?.id ?? null,
+        source: 'plan',
+      })
+      alert('Added to shopping cart')
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  const addAllShopToCart = async () => {
+    for (const row of shopList) {
+      await addShopItemToCart(row)
+    }
+    alert('All items added to cart')
+  }
+
+  const formatHistoryLine = (log) => {
+    const chefId = log.chef_user_id || log.created_by
+    const chef = chefId ? getDisplayName(chefId, displayNameMap) : 'Unknown'
+    return `${log.recipes?.name} (${log.meal_type}) — by Chef ${chef}`
   }
 
   const dayLogs = selectedDay ? logsForDay(selectedDay) : []
@@ -161,11 +206,16 @@ export function PlanPage() {
               {dayLogs.length === 0 ? (
                 <p className="plan-page__empty">Nothing logged this day.</p>
               ) : (
-                <ul>
+                <ul className="plan-page__history-list">
                   {dayLogs.map((l) => (
-                    <li key={l.id}>
-                      {l.recipes?.name} ({l.meal_type})
-                      {l.notes && <span className="plan-page__note"> — {l.notes}</span>}
+                    <li key={l.id} className="plan-page__history-item">
+                      <span>
+                        {formatHistoryLine(l)}
+                        {l.notes && <span className="plan-page__note"> — {l.notes}</span>}
+                      </span>
+                      <button type="button" className="plan-page__remove" onClick={() => deleteCookLog(l.id)}>
+                        Remove
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -205,18 +255,26 @@ export function PlanPage() {
         {shopList.length === 0 ? (
           <p>You have enough in the pantry for your planned meals!</p>
         ) : (
-          <ul className="plan-page__shop-list">
-            {shopList.map(({ ing, check }, i) => (
-              <li key={i}>
-                <strong>{ing.name}</strong> — need {formatQuantity(ing.quantity, ing.unit)}
-                {check.reason === 'insufficient' && ` (have ${formatQuantity(check.have, check.haveUnit)})`}
-                {check.reason === 'missing' && ' (not in pantry)'}
-                {check.reason === 'unit_mismatch' && ' (unit mismatch)'}
-                <br />
-                <small>For: {ing.recipes.join(', ')}</small>
-              </li>
-            ))}
-          </ul>
+          <>
+            <Button variant="secondary" fullWidth onClick={addAllShopToCart}>
+              Add all to shopping cart
+            </Button>
+            <ul className="plan-page__shop-list">
+              {shopList.map((row, i) => (
+                <li key={i}>
+                  <strong>{row.ing.name}</strong> — need {formatQuantity(row.ing.quantity, row.ing.unit)}
+                  {row.check.reason === 'insufficient' && ` (have ${formatQuantity(row.check.have, row.check.haveUnit)})`}
+                  {row.check.reason === 'missing' && ' (not in pantry)'}
+                  {row.check.reason === 'unit_mismatch' && ' (unit mismatch)'}
+                  <br />
+                  <small>For: {row.ing.recipes.join(', ')}</small>
+                  <Button variant="ghost" onClick={() => addShopItemToCart(row)}>
+                    Add to cart
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </Modal>
     </div>

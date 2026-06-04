@@ -40,3 +40,11 @@
   color: var(--danger);
   font-size: 0.9rem;
 }
+
+.pantry-form__preview {
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}

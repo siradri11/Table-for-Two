@@ -40,7 +40,7 @@
 
 .pantry-list__item {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 8px;
   padding: 0;
   overflow: hidden;
@@ -48,20 +48,58 @@
 
 .pantry-list__link {
   flex: 1;
-  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
   text-decoration: none;
   color: inherit;
+  align-items: flex-start;
+}
+
+.pantry-list__thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+
+.pantry-list__thumb--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  font-size: 1.5rem;
+}
+
+.pantry-list__body {
+  flex: 1;
+  min-width: 0;
 }
 
 .pantry-list__main {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .pantry-list__main strong {
   color: var(--text);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pantry-list__low-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--warning);
+  background: rgba(201, 162, 39, 0.15);
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 
 .pantry-list__qty {
@@ -76,18 +114,26 @@
   margin-top: 8px;
 }
 
+.pantry-list__side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  justify-content: center;
+}
+
+.pantry-list__side .btn {
+  font-size: 0.75rem;
+  padding: 8px 10px;
+  min-height: auto;
+}
+
 .pantry-list__delete {
   background: none;
   border: none;
   color: var(--danger);
   font-size: 0.75rem;
-  padding: 8px 12px;
+  padding: 4px 8px;
   cursor: pointer;
   font-family: var(--font);
-}
-
-.empty-state {
-  text-align: center;
-  color: var(--muted);
-  padding: 40px 20px;
 }

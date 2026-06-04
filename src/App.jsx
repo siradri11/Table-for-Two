@@ -14,6 +14,8 @@ import { RecipeForm } from './features/recipes/RecipeForm'
 import { CookingFlow } from './features/recipes/CookingFlow'
 import { PlanPage } from './features/plan/PlanPage'
 import { ChatPage } from './features/chat/ChatPage'
+import { ProfilePage } from './features/profile/ProfilePage'
+import { CartPage } from './features/cart/CartPage'
 import { Button } from './components/Button'
 
 function AppRoutes() {
@@ -55,6 +57,8 @@ function AppRoutes() {
         <Route path="recipes/:id/cook" element={<CookingFlow />} />
         <Route path="plan" element={<PlanPage />} />
         <Route path="chat" element={<ChatPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="cart" element={<CartPage />} />
       </Route>
     </Routes>
   )

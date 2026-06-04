@@ -4,6 +4,7 @@ import { Button } from '../../components/Button'
 import { useHousehold } from '../../hooks/useHousehold'
 import { useAuth } from '../../hooks/useAuth'
 import { findPantryItem } from '../../lib/pantryMatch'
+import { loadHouseholdDisplayNames, getDisplayName } from '../../lib/profiles'
 import { completeCooking, fetchRecipe, fetchPantry } from '../../lib/recipes'
 import { getPublicUrl } from '../../lib/storage'
 import { MEAL_TYPES, UNITS } from '../../lib/units'
@@ -17,15 +18,26 @@ export function CookingFlow() {
   const [recipe, setRecipe] = useState(null)
   const [phase, setPhase] = useState('steps')
   const [stepIndex, setStepIndex] = useState(0)
+  const [showAllSteps, setShowAllSteps] = useState(false)
   const [notes, setNotes] = useState('')
   const [mealType, setMealType] = useState('dinner')
+  const [chefUserId, setChefUserId] = useState('')
+  const [members, setMembers] = useState([])
+  const [displayNameMap, setDisplayNameMap] = useState({})
   const [usage, setUsage] = useState([])
   const [loading, setLoading] = useState(false)
 
   const load = useCallback(async () => {
     if (!id || !householdId) return
-    const [r, p] = await Promise.all([fetchRecipe(id), fetchPantry(householdId)])
+    const [r, p, names] = await Promise.all([
+      fetchRecipe(id),
+      fetchPantry(householdId),
+      loadHouseholdDisplayNames(householdId),
+    ])
     setRecipe(r)
+    setMembers(names.members)
+    setDisplayNameMap(names.displayNameMap)
+    if (user?.id) setChefUserId(user.id)
     setUsage(
       (r.recipe_ingredients ?? []).map((ing) => {
         const pantryItem = findPantryItem(ing, p)
@@ -37,7 +49,7 @@ export function CookingFlow() {
         }
       }),
     )
-  }, [id, householdId])
+  }, [id, householdId, user])
 
   useEffect(() => {
     load()
@@ -54,7 +66,12 @@ export function CookingFlow() {
   const handleDone = async () => {
     setLoading(true)
     try {
-      await completeCooking(householdId, id, user?.id, { mealType, notes, usage })
+      await completeCooking(householdId, id, user?.id, {
+        mealType,
+        notes,
+        usage,
+        chefUserId: chefUserId || user?.id,
+      })
       navigate(`/recipes/${id}`)
     } catch (err) {
       alert(err.message)
@@ -77,6 +94,16 @@ export function CookingFlow() {
             <select value={mealType} onChange={(e) => setMealType(e.target.value)}>
               {MEAL_TYPES.map((m) => (
                 <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Who&apos;s the Chef?
+            <select value={chefUserId} onChange={(e) => setChefUserId(e.target.value)}>
+              {members.map((m) => (
+                <option key={m.user_id} value={m.user_id}>
+                  {getDisplayName(m.user_id, displayNameMap)}
+                </option>
               ))}
             </select>
           </label>
@@ -132,6 +159,27 @@ export function CookingFlow() {
     )
   }
 
+  if (showAllSteps) {
+    return (
+      <div className="cooking-flow">
+        <h2>All steps — {recipe.name}</h2>
+        <ol className="cooking-flow__all-steps">
+          {steps.map((step, i) => {
+            const img = getPublicUrl(step.image_path)
+            return (
+              <li key={step.id ?? i} className={i === stepIndex ? 'cooking-flow__all-steps--current' : ''}>
+                <strong>Step {step.step_number}</strong>
+                {img && <img src={img} alt="" className="cooking-flow__step-img" />}
+                <p>{step.instruction}</p>
+              </li>
+            )
+          })}
+        </ol>
+        <Button fullWidth onClick={() => setShowAllSteps(false)}>Back to current step</Button>
+      </div>
+    )
+  }
+
   const stepImg = getPublicUrl(currentStep?.image_path)
 
   return (
@@ -139,12 +187,20 @@ export function CookingFlow() {
       <div className="cooking-flow__progress">
         Step {stepIndex + 1} of {steps.length}
       </div>
+      <Button variant="ghost" fullWidth onClick={() => setShowAllSteps(true)}>
+        View all steps
+      </Button>
       <div className="card cooking-flow__step-card">
         <h2>Step {stepIndex + 1}</h2>
         {stepImg && <img src={stepImg} alt="" className="cooking-flow__step-img" />}
         <p className="cooking-flow__instruction">{currentStep.instruction}</p>
       </div>
       <div className="cooking-flow__footer">
+        {stepIndex > 0 && (
+          <Button variant="secondary" fullWidth onClick={() => setStepIndex((i) => i - 1)}>
+            Previous step
+          </Button>
+        )}
         {isLastStep ? (
           <Button fullWidth onClick={finishSteps}>Finished cooking</Button>
         ) : (

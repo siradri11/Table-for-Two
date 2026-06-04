@@ -46,9 +46,12 @@ export function RecipeDetail() {
   const rTags = tags.filter((t) => tagIds.includes(t.id))
 
   const missingMessage = (m) => {
-    if (m.reason === 'missing') return `Need ${formatQuantity(m.needed, m.unit)} — not in pantry`
-    if (m.reason === 'unit_mismatch') return `Need ${formatQuantity(m.needed, m.unit)} — pantry has ${formatQuantity(m.have, m.haveUnit)} (different unit)`
-    return `Need ${formatQuantity(m.needed, m.unit)} — have ${formatQuantity(m.have, m.unit)}`
+    const prefix = m.name ? `${m.name} — ` : ''
+    if (m.reason === 'missing') return `${prefix}need ${formatQuantity(m.needed, m.unit)} — not in pantry`
+    if (m.reason === 'unit_mismatch') {
+      return `${prefix}need ${formatQuantity(m.needed, m.unit)} — pantry has ${formatQuantity(m.have, m.haveUnit)} (different unit)`
+    }
+    return `${prefix}need ${formatQuantity(m.needed, m.unit)} — have ${formatQuantity(m.have, m.unit)}`
   }
 
   return (

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../components/Button'
 import { TagChip } from '../../components/TagChip'
 import { useHousehold } from '../../hooks/useHousehold'
+import { getPublicUrl, uploadImage } from '../../lib/storage'
 import { supabase } from '../../supabaseClient'
 import { UNITS } from '../../lib/units'
 import './PantryItemForm.css'
@@ -16,6 +17,9 @@ export function PantryItemForm() {
   const [quantity, setQuantity] = useState('')
   const [unit, setUnit] = useState('g')
   const [notes, setNotes] = useState('')
+  const [lowStock, setLowStock] = useState('')
+  const [imagePath, setImagePath] = useState(null)
+  const [imageFile, setImageFile] = useState(null)
   const [selectedTags, setSelectedTags] = useState([])
   const [tags, setTags] = useState([])
   const [error, setError] = useState('')
@@ -42,6 +46,8 @@ export function PantryItemForm() {
             setQuantity(String(data.quantity))
             setUnit(data.unit)
             setNotes(data.notes || '')
+            setLowStock(data.low_stock_threshold != null ? String(data.low_stock_threshold) : '')
+            setImagePath(data.image_path)
             setSelectedTags(data.pantry_item_tags?.map((t) => t.tag_id) ?? [])
           }
         })
@@ -60,19 +66,32 @@ export function PantryItemForm() {
     setLoading(true)
     setError('')
     const qty = Math.max(0, Number(quantity) || 0)
+    const low = lowStock.trim() === '' ? null : Math.max(0, Number(lowStock) || 0)
 
     try {
+      let path = imagePath
+      if (imageFile) {
+        path = await uploadImage(householdId, imageFile, 'pantry')
+      }
+
+      const payload = {
+        name: name.trim(),
+        quantity: qty,
+        unit,
+        notes: notes || null,
+        low_stock_threshold: low,
+        image_path: path,
+        updated_at: new Date().toISOString(),
+      }
+
       let itemId = id
       if (isEdit) {
-        const { error: updErr } = await supabase
-          .from('pantry_items')
-          .update({ name: name.trim(), quantity: qty, unit, notes: notes || null, updated_at: new Date().toISOString() })
-          .eq('id', id)
+        const { error: updErr } = await supabase.from('pantry_items').update(payload).eq('id', id)
         if (updErr) throw updErr
       } else {
         const { data, error: insErr } = await supabase
           .from('pantry_items')
-          .insert({ household_id: householdId, name: name.trim(), quantity: qty, unit, notes: notes || null })
+          .insert({ household_id: householdId, ...payload })
           .select('id')
           .single()
         if (insErr) throw insErr
@@ -93,10 +112,17 @@ export function PantryItemForm() {
     }
   }
 
+  const preview = imageFile ? URL.createObjectURL(imageFile) : getPublicUrl(imagePath)
+
   return (
     <form className="pantry-form card" onSubmit={save}>
       <h2>{isEdit ? 'Edit item' : 'Add to pantry'}</h2>
       {error && <p className="form-error">{error}</p>}
+      <label>
+        Photo (optional)
+        <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
+      </label>
+      {preview && <img src={preview} alt="" className="pantry-form__preview" />}
       <label>
         Item name
         <input value={name} onChange={(e) => setName(e.target.value)} required />
@@ -115,6 +141,17 @@ export function PantryItemForm() {
           </select>
         </label>
       </div>
+      <label>
+        Low stock at (optional, same unit)
+        <input
+          type="number"
+          min="0"
+          step="any"
+          value={lowStock}
+          onChange={(e) => setLowStock(e.target.value)}
+          placeholder="Notify when at or below"
+        />
+      </label>
       <label>
         Notes (optional)
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />

@@ -88,7 +88,7 @@ export async function saveRecipe(householdId, form, recipeId) {
   return id
 }
 
-export async function completeCooking(householdId, recipeId, userId, { mealType, notes, usage }) {
+export async function completeCooking(householdId, recipeId, userId, { mealType, notes, usage, chefUserId }) {
   const { data: log, error: logErr } = await supabase
     .from('cook_logs')
     .insert({
@@ -97,6 +97,7 @@ export async function completeCooking(householdId, recipeId, userId, { mealType,
       meal_type: mealType,
       notes: notes || null,
       created_by: userId,
+      chef_user_id: chefUserId || userId,
     })
     .select('id')
     .single()

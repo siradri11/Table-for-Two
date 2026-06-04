@@ -26,6 +26,7 @@ In the [Supabase SQL Editor](https://supabase.com/dashboard), run migrations in 
 
 1. `supabase/migrations/001_initial.sql`
 2. `supabase/migrations/002_storage.sql`
+3. `supabase/migrations/003_improvements.sql`
 
 Enable **Email** auth under Authentication → Providers.
 

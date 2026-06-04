@@ -5,7 +5,9 @@ const tabs = [
   { to: '/pantry', label: 'Pantry', icon: '🥬' },
   { to: '/recipes', label: 'Recipes', icon: '📖' },
   { to: '/plan', label: 'Plan', icon: '📅' },
-  { to: '/chat', label: 'AI Chat', icon: '✨' },
+  { to: '/chat', label: 'Chat', icon: '✨' },
+  { to: '/profile', label: 'Profile', icon: '👤' },
+  { to: '/cart', label: 'Cart', icon: '🛒' },
 ]
 
 export function TabBar() {

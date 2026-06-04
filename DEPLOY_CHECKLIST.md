@@ -2,6 +2,8 @@
 
 Use this after pushing the latest code (includes `vercel.json` for routing).
 
+**Database:** Run `supabase/migrations/003_improvements.sql` in Supabase SQL Editor if you have not already (profiles, shopping cart, low stock, chef, pantry photos).
+
 ## Vercel deploy
 
 - [ ] Repo pushed to GitHub (`main`)

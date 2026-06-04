@@ -127,3 +127,32 @@
 .plan-page__shop-list small {
   color: var(--muted);
 }
+
+.plan-page__history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.plan-page__history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.plan-page__remove {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.plan-page__shop-list .btn {
+  margin-top: 8px;
+}

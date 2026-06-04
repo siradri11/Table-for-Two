@@ -71,3 +71,21 @@
 .cooking-flow--post .btn {
   margin-top: 10px;
 }
+
+.cooking-flow__all-steps {
+  margin: 0 0 20px;
+  padding-left: 20px;
+  line-height: 1.5;
+}
+
+.cooking-flow__all-steps li {
+  margin-bottom: 16px;
+}
+
+.cooking-flow__all-steps--current {
+  background: var(--accent);
+  margin-left: -12px;
+  padding: 12px;
+  border-radius: var(--radius);
+  list-style-position: inside;
+}
