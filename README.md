@@ -70,4 +70,52 @@ npm run build
 npm run preview
 ```
 
-Deploy the `dist` folder to any static host (Vercel, Netlify, Cloudflare Pages) for free.
+## Deploy to Vercel (use on your phone)
+
+No App Store needed — deploy once, open the HTTPS URL on each phone, then **Add to Home Screen**.
+
+### 1. Push to GitHub
+
+Ensure `main` is on GitHub (do not commit `.env.local`, `node_modules`, `dist`, or `supabase/.temp/`).
+
+### 2. Import on Vercel
+
+1. [vercel.com](https://vercel.com) → **Add New Project** → import this repo.
+2. Framework: **Vite** (auto-detected).
+3. Build command: `npm run build` · Output: `dist`
+4. **Environment variables** (Project → Settings → Environment Variables):
+
+   | Name | Value |
+   |------|--------|
+   | `VITE_SUPABASE_URL` | Supabase → Project Settings → API |
+   | `VITE_SUPABASE_ANON_KEY` | Same page (anon public key) |
+
+5. Deploy. Copy your production URL (e.g. `https://table-for-two.vercel.app`).
+
+SPA routing is handled by [vercel.json](vercel.json) so `/pantry`, `/recipes`, etc. work on refresh.
+
+### 3. Supabase Auth URLs (required for phone login)
+
+Supabase Dashboard → **Authentication** → **URL configuration**:
+
+- **Site URL:** `https://YOUR-VERCEL-URL.vercel.app`
+- **Redirect URLs:** add `https://YOUR-VERCEL-URL.vercel.app/**`
+
+Replace with your real Vercel URL. Save, then sign in again on the phone if auth misbehaves.
+
+### 4. Install on phones
+
+| Platform | Steps |
+|----------|--------|
+| Android (Chrome) | Open your Vercel URL → menu **Install app** or in-app **Install** banner |
+| iPhone (Safari) | Open URL → **Share** → **Add to Home Screen** |
+
+Partner: same URL, her account → **Join with invite code**.
+
+### 5. Verify after deploy
+
+- [ ] Sign in on phone
+- [ ] Add pantry item on phone → appears on PC (realtime)
+- [ ] Refresh `/recipes` — no 404
+- [ ] AI Chat sends a message
+- [ ] Home screen icon opens full-screen app
