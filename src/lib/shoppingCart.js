@@ -39,6 +39,7 @@ export async function addToCart(householdId, { name, quantity, unit, pantry_item
       unit,
       pantry_item_id: pantry_item_id || null,
       source: source || 'manual',
+      is_checked: false,
     })
     .select('id')
     .single()
@@ -51,7 +52,35 @@ export async function removeFromCart(cartItemId) {
   if (error) throw error
 }
 
-export async function completeCartItem(cartItem) {
+export async function setCartItemChecked(cartItemId, checked) {
+  const { error } = await supabase
+    .from('shopping_cart_items')
+    .update({ is_checked: checked })
+    .eq('id', cartItemId)
+  if (error) throw error
+}
+
+export async function updateCartItemQuantity(cartItemId, quantity) {
+  const { error } = await supabase
+    .from('shopping_cart_items')
+    .update({ quantity: Math.max(0.01, Number(quantity) || 0) })
+    .eq('id', cartItemId)
+  if (error) throw error
+}
+
+export async function updateCartItem(cartItemId, { name, quantity, unit }) {
+  const { error } = await supabase
+    .from('shopping_cart_items')
+    .update({
+      name: name.trim(),
+      quantity: Math.max(0.01, Number(quantity) || 0),
+      unit,
+    })
+    .eq('id', cartItemId)
+  if (error) throw error
+}
+
+async function addCartQuantityToPantry(cartItem) {
   if (cartItem.pantry_item_id) {
     const { data: item } = await supabase
       .from('pantry_items')
@@ -73,13 +102,16 @@ export async function completeCartItem(cartItem) {
       unit: cartItem.unit,
     })
   }
+}
+
+export async function completeCartItem(cartItem) {
+  await addCartQuantityToPantry(cartItem)
   await removeFromCart(cartItem.id)
 }
 
-export async function updateCartItemQuantity(cartItemId, quantity) {
-  const { error } = await supabase
-    .from('shopping_cart_items')
-    .update({ quantity: Math.max(0.01, Number(quantity) || 0) })
-    .eq('id', cartItemId)
-  if (error) throw error
+export async function saveCheckedToPantry(checkedItems) {
+  for (const item of checkedItems) {
+    await addCartQuantityToPantry(item)
+    await removeFromCart(item.id)
+  }
 }

@@ -56,6 +56,16 @@ export function HouseholdProvider({ user, children }) {
     return data
   }, [loadHousehold])
 
+  const joinHouseholdWithMerge = useCallback(async (code, merge) => {
+    const { data, error: fnErr } = await supabase.rpc('join_household_with_merge', {
+      p_invite_code: code,
+      p_merge: merge,
+    })
+    if (fnErr) throw fnErr
+    await loadHousehold()
+    return data
+  }, [loadHousehold])
+
   const value = useMemo(
     () => ({
       household,
@@ -65,8 +75,9 @@ export function HouseholdProvider({ user, children }) {
       refresh: loadHousehold,
       createHousehold,
       joinHousehold,
+      joinHouseholdWithMerge,
     }),
-    [household, loading, error, loadHousehold, createHousehold, joinHousehold],
+    [household, loading, error, loadHousehold, createHousehold, joinHousehold, joinHouseholdWithMerge],
   )
 
   return <HouseholdContext.Provider value={value}>{children}</HouseholdContext.Provider>

@@ -12,28 +12,37 @@ import {
 } from 'date-fns'
 import { Button } from '../../components/Button'
 import { Modal } from '../../components/Modal'
+import { useAuth } from '../../hooks/useAuth'
 import { useHousehold } from '../../hooks/useHousehold'
 import { useRealtime } from '../../hooks/useRealtime'
 import { aggregatePlanIngredients, checkIngredient } from '../../lib/pantryMatch'
 import { getDisplayName, loadHouseholdDisplayNames } from '../../lib/profiles'
 import { addToCart } from '../../lib/shoppingCart'
-import { fetchPantry } from '../../lib/recipes'
+import { fetchPantry, logManualMeal } from '../../lib/recipes'
 import { supabase } from '../../supabaseClient'
 import { MEAL_TYPES, formatQuantity } from '../../lib/units'
 import './PlanPage.css'
 
 export function PlanPage() {
   const { householdId } = useHousehold()
+  const { user } = useAuth()
   const [month, setMonth] = useState(new Date())
   const [cookLogs, setCookLogs] = useState([])
   const [mealPlans, setMealPlans] = useState([])
   const [recipes, setRecipes] = useState([])
   const [pantry, setPantry] = useState([])
   const [displayNameMap, setDisplayNameMap] = useState({})
+  const [members, setMembers] = useState([])
   const [selectedDay, setSelectedDay] = useState(null)
   const [planMode, setPlanMode] = useState(false)
   const [showShop, setShowShop] = useState(false)
   const [shopList, setShopList] = useState([])
+  const [showLogMeal, setShowLogMeal] = useState(false)
+  const [mealTitle, setMealTitle] = useState('')
+  const [mealType, setMealType] = useState('dinner')
+  const [mealNotes, setMealNotes] = useState('')
+  const [mealChefId, setMealChefId] = useState('')
+  const [logLoading, setLogLoading] = useState(false)
 
   const load = useCallback(async () => {
     if (!householdId) return
@@ -61,7 +70,9 @@ export function PlanPage() {
     if (!recs.error) setRecipes(recs.data ?? [])
     setPantry(pan)
     setDisplayNameMap(names.displayNameMap)
-  }, [householdId, month])
+    setMembers(names.members)
+    if (user?.id) setMealChefId((prev) => prev || user.id)
+  }, [householdId, month, user])
 
   useEffect(() => {
     load()
@@ -148,7 +159,33 @@ export function PlanPage() {
   const formatHistoryLine = (log) => {
     const chefId = log.chef_user_id || log.created_by
     const chef = chefId ? getDisplayName(chefId, displayNameMap) : 'Unknown'
-    return `${log.recipes?.name} (${log.meal_type}) — by Chef ${chef}`
+    const name = log.recipes?.name || log.title || 'Meal'
+    return `${name} (${log.meal_type}) — by Chef ${chef}`
+  }
+
+  const submitLogMeal = async (e) => {
+    e.preventDefault()
+    if (!mealTitle.trim() || !selectedDay || !householdId) return
+    setLogLoading(true)
+    try {
+      const dayDate = new Date(selectedDay)
+      dayDate.setHours(12, 0, 0, 0)
+      await logManualMeal(householdId, user?.id, {
+        title: mealTitle,
+        mealType,
+        notes: mealNotes,
+        chefUserId: mealChefId || user?.id,
+        cookedAt: dayDate.toISOString(),
+      })
+      setShowLogMeal(false)
+      setMealTitle('')
+      setMealNotes('')
+      load()
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setLogLoading(false)
+    }
   }
 
   const dayLogs = selectedDay ? logsForDay(selectedDay) : []
@@ -202,7 +239,12 @@ export function PlanPage() {
           <h3>{format(selectedDay, 'EEEE, MMM d')}</h3>
           {!planMode && (
             <>
-              <h4>Cooked</h4>
+              <div className="plan-page__history-header">
+                <h4>Cooked</h4>
+                <Button variant="secondary" onClick={() => setShowLogMeal(true)}>
+                  Log a meal
+                </Button>
+              </div>
               {dayLogs.length === 0 ? (
                 <p className="plan-page__empty">Nothing logged this day.</p>
               ) : (
@@ -250,6 +292,45 @@ export function PlanPage() {
           )}
         </div>
       )}
+
+      <Modal open={showLogMeal} onClose={() => setShowLogMeal(false)} title="Log a meal">
+        <form onSubmit={submitLogMeal}>
+          <label>
+            What did you eat?
+            <input
+              value={mealTitle}
+              onChange={(e) => setMealTitle(e.target.value)}
+              placeholder="e.g. Takeout pizza"
+              required
+            />
+          </label>
+          <label>
+            Meal type
+            <select value={mealType} onChange={(e) => setMealType(e.target.value)}>
+              {MEAL_TYPES.map((m) => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Notes (optional)
+            <textarea value={mealNotes} onChange={(e) => setMealNotes(e.target.value)} rows={2} />
+          </label>
+          <label>
+            Who ate / cooked?
+            <select value={mealChefId} onChange={(e) => setMealChefId(e.target.value)}>
+              {members.map((m) => (
+                <option key={m.user_id} value={m.user_id}>
+                  {getDisplayName(m.user_id, displayNameMap)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Button type="submit" fullWidth disabled={logLoading}>
+            {logLoading ? 'Saving…' : 'Save to history'}
+          </Button>
+        </form>
+      </Modal>
 
       <Modal open={showShop} onClose={() => setShowShop(false)} title="Ingredients needed">
         {shopList.length === 0 ? (

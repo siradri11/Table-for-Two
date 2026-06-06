@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../components/Button'
 import { TagChip } from '../../components/TagChip'
@@ -13,6 +13,8 @@ export function PantryItemForm() {
   const isEdit = Boolean(id)
   const navigate = useNavigate()
   const { householdId } = useHousehold()
+  const cameraInputRef = useRef(null)
+  const albumInputRef = useRef(null)
   const [name, setName] = useState('')
   const [quantity, setQuantity] = useState('')
   const [unit, setUnit] = useState('g')
@@ -58,6 +60,10 @@ export function PantryItemForm() {
     setSelectedTags((prev) =>
       prev.includes(tagId) ? prev.filter((t) => t !== tagId) : [...prev, tagId],
     )
+  }
+
+  const handleImageSelect = (file) => {
+    if (file) setImageFile(file)
   }
 
   const save = async (e) => {
@@ -118,10 +124,32 @@ export function PantryItemForm() {
     <form className="pantry-form card" onSubmit={save}>
       <h2>{isEdit ? 'Edit item' : 'Add to pantry'}</h2>
       {error && <p className="form-error">{error}</p>}
-      <label>
-        Photo (optional)
-        <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
-      </label>
+      <fieldset className="pantry-form__photo">
+        <legend>Photo (optional)</legend>
+        <div className="pantry-form__photo-btns">
+          <Button type="button" variant="secondary" onClick={() => cameraInputRef.current?.click()}>
+            Take photo
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => albumInputRef.current?.click()}>
+            Choose from album
+          </Button>
+        </div>
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          hidden
+          onChange={(e) => handleImageSelect(e.target.files?.[0] ?? null)}
+        />
+        <input
+          ref={albumInputRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => handleImageSelect(e.target.files?.[0] ?? null)}
+        />
+      </fieldset>
       {preview && <img src={preview} alt="" className="pantry-form__preview" />}
       <label>
         Item name

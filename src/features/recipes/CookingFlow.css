@@ -52,12 +52,34 @@
 }
 
 .cooking-flow__usage-row {
-  display: grid;
-  grid-template-columns: 1fr 72px 72px;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
   font-size: 0.9rem;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cooking-flow__usage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cooking-flow__pantry-qty {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.cooking-flow__usage-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cooking-flow__usage-inputs input {
+  width: 100px;
 }
 
 .cooking-flow__usage-row input,

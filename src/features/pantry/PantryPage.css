@@ -137,3 +137,71 @@
   cursor: pointer;
   font-family: var(--font);
 }
+
+.pantry-page__view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.pantry-page__view-toggle button {
+  padding: 8px 12px;
+  border: none;
+  background: var(--surface);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.pantry-page__view-btn--active {
+  background: var(--accent) !important;
+  color: var(--text) !important;
+  font-weight: 600;
+}
+
+.pantry-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.pantry-grid__item {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.pantry-grid__link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  padding: 10px;
+}
+
+.pantry-grid__thumb {
+  width: 100% !important;
+  height: 100px !important;
+  margin-bottom: 8px;
+}
+
+.pantry-grid__body {
+  flex: 1;
+}
+
+.pantry-grid__body .pantry-list__main {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pantry-grid__item .btn {
+  margin: 0 10px 10px;
+  font-size: 0.75rem;
+}

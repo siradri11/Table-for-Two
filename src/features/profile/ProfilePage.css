@@ -49,3 +49,10 @@
   color: var(--danger);
   font-size: 0.9rem;
 }
+
+.profile-page__success {
+  color: var(--success);
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}

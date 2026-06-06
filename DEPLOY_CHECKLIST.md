@@ -2,7 +2,7 @@
 
 Use this after pushing the latest code (includes `vercel.json` for routing).
 
-**Database:** Run `supabase/migrations/003_improvements.sql` in Supabase SQL Editor if you have not already (profiles, shopping cart, low stock, chef, pantry photos).
+**Database:** Run migrations in Supabase SQL Editor if you have not already: `003_improvements.sql` (profiles, cart, low stock, chef, pantry photos), then `004_ux_improvements.sql` (preparation steps, manual history, cart checked state, join-with-merge).
 
 ## Vercel deploy
 

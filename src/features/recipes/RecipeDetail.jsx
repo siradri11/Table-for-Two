@@ -78,16 +78,36 @@ export function RecipeDetail() {
           : 'Some ingredients are missing — tap to see what you need'}
       </div>
 
-      <div className="card">
-        <h3>Ingredients</h3>
-        <ul className="recipe-detail__ingredients">
-          {(recipe.recipe_ingredients ?? []).map((ing) => (
-            <li key={ing.id}>
-              {ing.name} — {formatQuantity(ing.quantity, ing.unit)}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {(recipe.recipe_ingredients ?? []).length > 0 && (
+        <div className="card">
+          <h3>Ingredients</h3>
+          <ul className="recipe-detail__ingredients">
+            {recipe.recipe_ingredients.map((ing) => (
+              <li key={ing.id}>
+                {ing.name} — {formatQuantity(ing.quantity, ing.unit)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {(recipe.recipe_preparation_steps ?? []).length > 0 && (
+        <div className="card">
+          <h3>Preparation</h3>
+          <ol className="recipe-detail__prep-list">
+            {recipe.recipe_preparation_steps.map((prep) => {
+              const img = getPublicUrl(prep.image_path)
+              return (
+                <li key={prep.id}>
+                  <strong>Prep {prep.prep_number}</strong>
+                  {img && <img src={img} alt="" className="recipe-detail__prep-img" />}
+                  <p>{prep.instruction}</p>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+      )}
 
       <div className="recipe-detail__actions">
         <Button fullWidth onClick={() => navigate(`/recipes/${id}/cook`)}>

@@ -3,11 +3,11 @@ import './TabBar.css'
 
 const tabs = [
   { to: '/pantry', label: 'Pantry', icon: '🥬' },
+  { to: '/cart', label: 'Cart', icon: '🛒' },
   { to: '/recipes', label: 'Recipes', icon: '📖' },
   { to: '/plan', label: 'Plan', icon: '📅' },
   { to: '/chat', label: 'Chat', icon: '✨' },
   { to: '/profile', label: 'Profile', icon: '👤' },
-  { to: '/cart', label: 'Cart', icon: '🛒' },
 ]
 
 export function TabBar() {

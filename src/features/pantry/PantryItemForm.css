@@ -48,3 +48,9 @@
   border-radius: var(--radius);
   margin-bottom: 12px;
 }
+
+.pantry-form__photo-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
