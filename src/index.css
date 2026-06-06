@@ -48,6 +48,18 @@ h1, h2, h3, h4 {
   padding: 16px 20px;
 }
 
+.onboarding__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.onboarding__logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
 .onboarding__header h1 {
   margin: 0;
   font-size: 1.25rem;

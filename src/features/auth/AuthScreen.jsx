@@ -26,7 +26,7 @@ export function AuthScreen({ onSignIn, onSignUp }) {
   return (
     <div className="auth-screen">
       <div className="auth-screen__hero">
-        <h1>Table for Two</h1>
+        <img src="/logo.png" alt="Table for Two" className="auth-screen__logo" />
         <p>Your cozy kitchen companion</p>
       </div>
       <form className="auth-screen__form card" onSubmit={submit}>

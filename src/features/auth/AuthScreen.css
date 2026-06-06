@@ -11,10 +11,11 @@
   padding-top: 40px;
 }
 
-.auth-screen__hero h1 {
-  font-size: 2rem;
-  color: var(--text);
-  margin: 0 0 8px;
+.auth-screen__logo {
+  width: min(200px, 70vw);
+  height: auto;
+  margin: 0 auto 12px;
+  display: block;
 }
 
 .auth-screen__hero p {

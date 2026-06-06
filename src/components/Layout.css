@@ -19,6 +19,20 @@
   z-index: 50;
 }
 
+.layout__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.layout__logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .layout__title {
   font-size: 1.35rem;
   margin: 0;

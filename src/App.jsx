@@ -34,7 +34,10 @@ function AppRoutes() {
     return (
       <div className="onboarding">
         <header className="onboarding__header">
-          <h1>Table for Two</h1>
+          <div className="onboarding__brand">
+            <img src="/logo.png" alt="Table for Two" className="onboarding__logo" />
+            <h1>Table for Two</h1>
+          </div>
           <Button variant="ghost" onClick={signOut}>Sign out</Button>
         </header>
         <HouseholdSetup />
