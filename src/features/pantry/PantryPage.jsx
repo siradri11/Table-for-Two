@@ -84,6 +84,7 @@ export function PantryPage() {
   const [items, setItems] = useState([])
   const [tags, setTags] = useState([])
   const [filterTag, setFilterTag] = useState(null)
+  const [lowStockOnly, setLowStockOnly] = useState(false)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState(() => localStorage.getItem(VIEW_KEY) || 'list')
@@ -116,12 +117,25 @@ export function PantryPage() {
 
   const pantryTags = tags
   const filtered = items.filter((item) => {
+    if (lowStockOnly && !isLowStock(item)) return false
     const q = search.trim().toLowerCase()
     if (q && !item.name.toLowerCase().includes(q)) return false
     if (!filterTag) return true
     const itemTags = item.pantry_item_tags?.map((t) => t.tag_id) ?? []
     return itemTags.includes(filterTag)
   })
+
+  const lowStockCount = items.filter(isLowStock).length
+
+  const emptyMessage = () => {
+    if (items.length === 0) return 'Your pantry is waiting. Add your first item!'
+    if (lowStockOnly && lowStockCount === 0) {
+      return 'No low stock items. Set a “Low stock at” threshold on items to track them.'
+    }
+    if (lowStockOnly) return 'No low stock items match your search or tag filter.'
+    if (search.trim() || filterTag) return 'No items match your search or filters.'
+    return 'Your pantry is waiting. Add your first item!'
+  }
 
   const deleteItem = async (id) => {
     if (!confirm('Remove this item from the pantry?')) return
@@ -185,8 +199,17 @@ export function PantryPage() {
       <div className="pantry-page__filters">
         <TagChip
           tag={{ name: 'All', color: '#ebe6df' }}
-          selected={!filterTag}
-          onClick={() => setFilterTag(null)}
+          selected={!filterTag && !lowStockOnly}
+          onClick={() => {
+            setFilterTag(null)
+            setLowStockOnly(false)
+          }}
+          small
+        />
+        <TagChip
+          tag={{ name: lowStockCount ? `Low stock (${lowStockCount})` : 'Low stock', color: '#c9a227' }}
+          selected={lowStockOnly}
+          onClick={() => setLowStockOnly((v) => !v)}
           small
         />
         {pantryTags.map((tag) => (
@@ -203,7 +226,7 @@ export function PantryPage() {
       {loading ? (
         <p className="empty-state">Loading…</p>
       ) : filtered.length === 0 ? (
-        <p className="empty-state">Your pantry is waiting. Add your first item!</p>
+        <p className="empty-state">{emptyMessage()}</p>
       ) : (
         <ul className={view === 'grid' ? 'pantry-grid' : 'pantry-list'}>
           {filtered.map((item) => {
