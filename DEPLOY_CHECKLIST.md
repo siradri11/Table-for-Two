@@ -2,7 +2,9 @@
 
 Use this after pushing the latest code (includes `vercel.json` for routing).
 
-**Database:** Run migrations in Supabase SQL Editor if you have not already: `003_improvements.sql` (profiles, cart, low stock, chef, pantry photos), then `004_ux_improvements.sql` (preparation steps, manual history, cart checked state, join-with-merge).
+**Database:** Run migrations in order through `005_concept_overhaul.sql` (URL recipes, meal diary, simplified merge).
+
+**Edge functions:** Deploy `gemini-chat` (optional) and `scan-recipe` (for recipe URL scanning).
 
 ## Vercel deploy
 
@@ -31,6 +33,8 @@ Dashboard → **Authentication** → **URL configuration**
 ## Verify
 
 - [ ] Pantry: add item on phone → shows on other device
-- [ ] Recipes: open a recipe, refresh page — no 404
-- [ ] Plan: calendar loads
+- [ ] Cart: check item → Save to pantry
+- [ ] Recipes: add bookmark or scan URL
+- [ ] Plan: tap day → diary notes save
+- [ ] Refresh page — no 404
 - [ ] AI Chat: send or “Suggest from my pantry” works

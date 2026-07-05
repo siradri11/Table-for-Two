@@ -1,12 +1,13 @@
 # Table for Two
 
-A cozy PWA for couples to share pantry inventory, favorite recipes, meal planning, and AI recipe suggestions.
+A cozy PWA for couples to share pantry inventory, recipe bookmarks, a meal diary, and AI chat.
 
 ## Features
 
-- **Pantry** — Track items with quantity/units, tags (presets + custom colors), real-time sync
-- **Recipes** — Photos, ingredients, step-by-step cooking mode, pantry sufficiency check, auto-deduct pantry after cooking
-- **Plan** — Calendar of meals cooked, meal planner, aggregated shopping list
+- **Pantry** — Track items with quantity/units, tags, photos, low-stock alerts, list/grid views
+- **Cart** — Shopping list synced between devices; save purchases back to pantry
+- **Recipes** — Bookmark recipe URLs or scan pages for Recipe schema and save formatted text
+- **Plan** — Calendar food diary (breakfast, lunch, snacks, dinner notes per day)
 - **AI Chat** — Gemini-powered suggestions based on your pantry (via Supabase Edge Function)
 
 ## Setup
@@ -28,6 +29,7 @@ In the [Supabase SQL Editor](https://supabase.com/dashboard), run migrations in 
 2. `supabase/migrations/002_storage.sql`
 3. `supabase/migrations/003_improvements.sql`
 4. `supabase/migrations/004_ux_improvements.sql`
+5. `supabase/migrations/005_concept_overhaul.sql`
 
 Enable **Email** auth under Authentication → Providers.
 
@@ -35,13 +37,21 @@ Enable **Email** auth under Authentication → Providers.
 
 The migration creates a public `recipe-images` bucket. If it fails, create the bucket manually in Storage and re-run the storage policies from `002_storage.sql`.
 
-### 4. Gemini Edge Function (optional, for AI Chat)
+### 4. Edge Functions
+
+**Gemini chat (optional):**
 
 ```bash
 npx supabase login
 npx supabase link --project-ref YOUR_PROJECT_REF
 npx supabase secrets set GEMINI_API_KEY=your_google_ai_studio_api_key
 npx supabase functions deploy gemini-chat
+```
+
+**Recipe URL scanner (for Scan for Recipe):**
+
+```bash
+npx supabase functions deploy scan-recipe
 ```
 
 Get an API key from [Google AI Studio](https://aistudio.google.com).

@@ -78,6 +78,10 @@ export function RecipesPage() {
                   {cover ? <img src={cover} alt="" className="recipe-card__img" /> : <div className="recipe-card__placeholder">🍽️</div>}
                   <div className="recipe-card__body">
                     <strong>{recipe.name}</strong>
+                    {recipe.is_bookmark && <span className="recipe-card__badge">Link</span>}
+                    {!recipe.is_bookmark && recipe.scraped_content && (
+                      <span className="recipe-card__badge recipe-card__badge--saved">Saved</span>
+                    )}
                     <div className="recipe-card__tags">
                       {rTags.map((t) => <TagChip key={t.id} tag={t} small />)}
                     </div>

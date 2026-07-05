@@ -93,7 +93,25 @@ async function addCartQuantityToPantry(cartItem) {
         .from('pantry_items')
         .update({ quantity: next, updated_at: new Date().toISOString() })
         .eq('id', cartItem.pantry_item_id)
+      return
     }
+  }
+
+  const { data: pantryRows } = await supabase
+    .from('pantry_items')
+    .select('id, quantity, name, unit')
+    .eq('household_id', cartItem.household_id)
+
+  const match = (pantryRows ?? []).find(
+    (p) => normalizeName(p.name) === normalizeName(cartItem.name) && p.unit === cartItem.unit,
+  )
+
+  if (match) {
+    const next = Number(match.quantity) + Number(cartItem.quantity)
+    await supabase
+      .from('pantry_items')
+      .update({ quantity: next, updated_at: new Date().toISOString() })
+      .eq('id', match.id)
   } else {
     await supabase.from('pantry_items').insert({
       household_id: cartItem.household_id,

@@ -10,6 +10,35 @@
   margin: 0;
 }
 
+.plan-page__intro {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+.plan-page__diary-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+.plan-page__diary-field textarea {
+  font-weight: 400;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font);
+  resize: vertical;
+}
+
+.plan-page__saving {
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .plan-page__nav {
   display: flex;
   align-items: center;
