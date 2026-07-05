@@ -54,6 +54,7 @@ function AppRoutes() {
         <Route path="pantry/tags" element={<TagManager />} />
         <Route path="recipes" element={<RecipesPage />} />
         <Route path="recipes/new" element={<RecipeForm />} />
+        <Route path="recipes/:id/edit" element={<RecipeForm />} />
         <Route path="recipes/:id" element={<RecipeDetail />} />
         <Route path="plan" element={<PlanPage />} />
         <Route path="chat" element={<ChatPage />} />

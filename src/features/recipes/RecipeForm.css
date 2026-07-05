@@ -36,11 +36,41 @@
 
 .recipe-form__preview,
 .recipe-form__step-img {
+  width: 100%;
   max-width: 100%;
   border-radius: var(--radius);
   margin: 8px 0;
   max-height: 160px;
   object-fit: cover;
+}
+
+.recipe-form__photo {
+  border: none;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.recipe-form__photo-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.recipe-form__preview-card {
+  margin-bottom: 16px;
+}
+
+.recipe-form__scan-msg {
+  margin: 0 0 12px;
+  color: var(--success);
+  font-weight: 600;
+}
+
+.recipe-form__content-edit {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
 }
 
 .recipe-form__row-block {

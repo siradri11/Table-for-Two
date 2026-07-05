@@ -17,7 +17,7 @@ function isLowStock(item) {
   return Number(item.quantity) <= Number(item.low_stock_threshold)
 }
 
-function PantryItemCard({ item, itemTags, low, onDelete, onAddToCart, layout }) {
+function PantryItemCard({ item, itemTags, low, onAddToCart, layout }) {
   const thumb = getPublicUrl(item.image_path)
   const content = (
     <>
@@ -71,9 +71,6 @@ function PantryItemCard({ item, itemTags, low, onDelete, onAddToCart, layout }) 
             Add to cart
           </Button>
         )}
-        <button type="button" className="pantry-list__delete" onClick={() => onDelete(item.id)}>
-          Delete
-        </button>
       </div>
     </li>
   )
@@ -135,12 +132,6 @@ export function PantryPage() {
     if (lowStockOnly) return 'No low stock items match your search or tag filter.'
     if (search.trim() || filterTag) return 'No items match your search or filters.'
     return 'Your pantry is waiting. Add your first item!'
-  }
-
-  const deleteItem = async (id) => {
-    if (!confirm('Remove this item from the pantry?')) return
-    await supabase.from('pantry_items').delete().eq('id', id)
-    load()
   }
 
   const addItemToCart = async (item) => {
@@ -238,7 +229,6 @@ export function PantryPage() {
                 item={item}
                 itemTags={itemTags}
                 low={isLowStock(item)}
-                onDelete={deleteItem}
                 onAddToCart={addItemToCart}
                 layout={view}
               />
