@@ -11,7 +11,6 @@ import { TagManager } from './features/pantry/TagManager'
 import { RecipesPage } from './features/recipes/RecipesPage'
 import { RecipeDetail } from './features/recipes/RecipeDetail'
 import { RecipeForm } from './features/recipes/RecipeForm'
-import { CookingFlow } from './features/recipes/CookingFlow'
 import { PlanPage } from './features/plan/PlanPage'
 import { ChatPage } from './features/chat/ChatPage'
 import { ProfilePage } from './features/profile/ProfilePage'
@@ -56,8 +55,6 @@ function AppRoutes() {
         <Route path="recipes" element={<RecipesPage />} />
         <Route path="recipes/new" element={<RecipeForm />} />
         <Route path="recipes/:id" element={<RecipeDetail />} />
-        <Route path="recipes/:id/edit" element={<RecipeForm />} />
-        <Route path="recipes/:id/cook" element={<CookingFlow />} />
         <Route path="plan" element={<PlanPage />} />
         <Route path="chat" element={<ChatPage />} />
         <Route path="profile" element={<ProfilePage />} />

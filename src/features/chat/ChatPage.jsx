@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
 import { useHousehold } from '../../hooks/useHousehold'
-import { fetchPantry } from '../../lib/recipes'
+import { fetchPantry } from '../../lib/pantry'
 import { formatQuantity } from '../../lib/units'
 import { supabase } from '../../supabaseClient'
 import './ChatPage.css'
