@@ -4,8 +4,7 @@ import { Button } from '../../components/Button'
 import { TagChip } from '../../components/TagChip'
 import { useHousehold } from '../../hooks/useHousehold'
 import { useRealtime } from '../../hooks/useRealtime'
-import { getPublicUrl } from '../../lib/storage'
-import { fetchRecipes } from '../../lib/recipes'
+import { fetchRecipes, getRecipeCoverUrl } from '../../lib/recipes'
 import { supabase } from '../../supabaseClient'
 import './RecipesPage.css'
 
@@ -71,7 +70,7 @@ export function RecipesPage() {
           {filtered.map((recipe) => {
             const tagIds = recipe.recipe_tags?.map((t) => t.tag_id) ?? []
             const rTags = recipeTags.filter((t) => tagIds.includes(t.id))
-            const cover = getPublicUrl(recipe.cover_image_path)
+            const cover = getRecipeCoverUrl(recipe)
             return (
               <li key={recipe.id}>
                 <Link to={`/recipes/${recipe.id}`} className="card recipe-card">

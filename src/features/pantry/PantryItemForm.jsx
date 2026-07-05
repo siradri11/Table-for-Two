@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../components/Button'
 import { TagChip } from '../../components/TagChip'
 import { useHousehold } from '../../hooks/useHousehold'
+import { deletePantryItem } from '../../lib/pantry'
 import { getPublicUrl, uploadImage } from '../../lib/storage'
 import { supabase } from '../../supabaseClient'
 import { UNITS } from '../../lib/units'
@@ -118,6 +119,20 @@ export function PantryItemForm() {
     }
   }
 
+  const handleDelete = async () => {
+    if (!confirm('Remove this item from the pantry?')) return
+    setLoading(true)
+    setError('')
+    try {
+      await deletePantryItem(id)
+      navigate('/pantry')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const preview = imageFile ? URL.createObjectURL(imageFile) : getPublicUrl(imagePath)
 
   return (
@@ -203,6 +218,11 @@ export function PantryItemForm() {
       <Button type="button" variant="ghost" fullWidth onClick={() => navigate('/pantry')}>
         Cancel
       </Button>
+      {isEdit && (
+        <Button type="button" variant="secondary" fullWidth disabled={loading} onClick={handleDelete}>
+          Delete
+        </Button>
+      )}
     </form>
   )
 }

@@ -1,0 +1,36 @@
+.recipe-content {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-family: var(--font-body, inherit);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.recipe-content__heading {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.recipe-content__heading:first-child {
+  margin-top: 0;
+}
+
+.recipe-content__para {
+  margin: 0 0 0.75rem;
+}
+
+.recipe-content__list {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.recipe-content__list li {
+  margin-bottom: 0.35rem;
+}
+
+.recipe-content__list--ordered {
+  padding-left: 1.5rem;
+}

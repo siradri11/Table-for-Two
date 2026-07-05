@@ -2,9 +2,13 @@
 
 Use this after pushing the latest code (includes `vercel.json` for routing).
 
-**Database:** Run migrations in order through `005_concept_overhaul.sql` (URL recipes, meal diary, simplified merge).
+**Database:** Run migrations in order through `006_recipe_cover_url.sql` (recipe cover URLs from schema scan).
 
-**Edge functions:** Deploy `gemini-chat` (optional) and `scan-recipe` (for recipe URL scanning).
+**Edge functions:** Deploy `gemini-chat` (optional) and `scan-recipe` (recipe URL scanning + schema image extraction). After UI changes that touch scan behavior, redeploy with:
+
+```bash
+npx supabase functions deploy scan-recipe
+```
 
 ## Vercel deploy
 
@@ -32,9 +36,9 @@ Dashboard → **Authentication** → **URL configuration**
 
 ## Verify
 
-- [ ] Pantry: add item on phone → shows on other device
+- [ ] Pantry: tap item → edit → delete works
 - [ ] Cart: check item → Save to pantry
-- [ ] Recipes: add bookmark or scan URL
+- [ ] Recipes: scan URL (formatted text, thumbnail if schema has image), edit recipe, manual cover photo
 - [ ] Plan: tap day → diary notes save
 - [ ] Refresh page — no 404
 - [ ] AI Chat: send or “Suggest from my pantry” works

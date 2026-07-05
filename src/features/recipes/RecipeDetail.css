@@ -6,6 +6,28 @@
   margin-bottom: 12px;
 }
 
+.recipe-detail__content {
+  overflow: hidden;
+}
+
+.recipe-detail__badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  background: var(--border);
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.recipe-detail__hint {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
 .recipe-detail h2 {
   margin: 0 0 8px;
   font-size: 1.4rem;

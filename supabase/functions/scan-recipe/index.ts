@@ -17,15 +17,56 @@ function findRecipeNodes(data: unknown): Record<string, unknown>[] {
   return []
 }
 
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&([a-zA-Z]+);/g, (_, name) => {
+      const map: Record<string, string> = {
+        amp: '&',
+        lt: '<',
+        gt: '>',
+        quot: '"',
+        apos: "'",
+        ndash: '–',
+        mdash: '—',
+      }
+      return map[name.toLowerCase()] ?? `&${name};`
+    })
+    .replace(/&#(\d+);/g, (_, num) => String.fromCharCode(Number(num)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+}
+
 function asText(value: unknown): string {
   if (value == null) return ''
-  if (typeof value === 'string') return value.trim()
+  if (typeof value === 'string') return decodeHtmlEntities(value.trim())
   if (typeof value === 'number') return String(value)
   if (Array.isArray(value)) return value.map(asText).filter(Boolean).join(', ')
   if (typeof value === 'object' && value !== null && 'text' in value) {
     return asText((value as { text?: unknown }).text)
   }
   return ''
+}
+
+function extractImageUrl(value: unknown): string | null {
+  if (!value) return null
+  if (typeof value === 'string') {
+    const url = value.trim()
+    return url.startsWith('http') ? url : null
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const url = extractImageUrl(item)
+      if (url) return url
+    }
+    return null
+  }
+  if (typeof value === 'object' && value !== null) {
+    const obj = value as Record<string, unknown>
+    if (typeof obj.url === 'string' && obj.url.startsWith('http')) return obj.url.trim()
+    if (typeof obj['@id'] === 'string' && obj['@id'].startsWith('http')) return obj['@id'].trim()
+    if (typeof obj.contentUrl === 'string' && obj.contentUrl.startsWith('http')) return obj.contentUrl.trim()
+  }
+  return null
 }
 
 function formatIngredient(ing: unknown): string {
@@ -156,8 +197,9 @@ serve(async (req) => {
 
     const formatted = formatRecipe(recipe)
     const title = asText(recipe.name)
+    const imageUrl = extractImageUrl(recipe.image)
 
-    return new Response(JSON.stringify({ found: true, title, formatted }), {
+    return new Response(JSON.stringify({ found: true, title, formatted, imageUrl }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (err) {

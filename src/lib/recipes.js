@@ -1,4 +1,10 @@
+import { getPublicUrl } from './storage'
 import { supabase } from '../supabaseClient'
+
+export function getRecipeCoverUrl(recipe) {
+  if (!recipe) return null
+  return getPublicUrl(recipe.cover_image_path) || recipe.cover_image_url || null
+}
 
 export async function fetchRecipe(id) {
   const { data: recipe, error } = await supabase
@@ -20,7 +26,14 @@ export async function fetchRecipes(householdId) {
   return data ?? []
 }
 
-export async function saveBookmark(householdId, { name, sourceUrl, tagIds }) {
+async function syncRecipeTags(recipeId, tagIds) {
+  await supabase.from('recipe_tags').delete().eq('recipe_id', recipeId)
+  if (tagIds?.length) {
+    await supabase.from('recipe_tags').insert(tagIds.map((tag_id) => ({ recipe_id: recipeId, tag_id })))
+  }
+}
+
+export async function saveBookmark(householdId, { name, sourceUrl, tagIds, coverImagePath, coverImageUrl }) {
   const { data, error } = await supabase
     .from('recipes')
     .insert({
@@ -29,20 +42,19 @@ export async function saveBookmark(householdId, { name, sourceUrl, tagIds }) {
       source_url: sourceUrl.trim(),
       is_bookmark: true,
       scraped_content: null,
+      cover_image_path: coverImagePath ?? null,
+      cover_image_url: coverImageUrl ?? null,
       updated_at: new Date().toISOString(),
     })
     .select('id')
     .single()
   if (error) throw error
 
-  if (tagIds?.length) {
-    await supabase.from('recipe_tags').insert(tagIds.map((tag_id) => ({ recipe_id: data.id, tag_id })))
-  }
-
+  await syncRecipeTags(data.id, tagIds)
   return data.id
 }
 
-export async function saveScrapedRecipe(householdId, { name, sourceUrl, scrapedContent, tagIds }) {
+export async function saveScrapedRecipe(householdId, { name, sourceUrl, scrapedContent, tagIds, coverImagePath, coverImageUrl }) {
   const { data, error } = await supabase
     .from('recipes')
     .insert({
@@ -51,17 +63,41 @@ export async function saveScrapedRecipe(householdId, { name, sourceUrl, scrapedC
       source_url: sourceUrl.trim(),
       scraped_content: scrapedContent,
       is_bookmark: false,
+      cover_image_path: coverImagePath ?? null,
+      cover_image_url: coverImageUrl ?? null,
       updated_at: new Date().toISOString(),
     })
     .select('id')
     .single()
   if (error) throw error
 
-  if (tagIds?.length) {
-    await supabase.from('recipe_tags').insert(tagIds.map((tag_id) => ({ recipe_id: data.id, tag_id })))
+  await syncRecipeTags(data.id, tagIds)
+  return data.id
+}
+
+export async function updateRecipe(id, {
+  name,
+  sourceUrl,
+  scrapedContent,
+  isBookmark,
+  tagIds,
+  coverImagePath,
+  coverImageUrl,
+}) {
+  const payload = {
+    name: name.trim(),
+    source_url: sourceUrl?.trim() || null,
+    scraped_content: isBookmark ? null : scrapedContent,
+    is_bookmark: Boolean(isBookmark),
+    cover_image_path: coverImagePath ?? null,
+    cover_image_url: coverImageUrl ?? null,
+    updated_at: new Date().toISOString(),
   }
 
-  return data.id
+  const { error } = await supabase.from('recipes').update(payload).eq('id', id)
+  if (error) throw error
+
+  await syncRecipeTags(id, tagIds)
 }
 
 export async function deleteRecipe(id) {
